@@ -1,0 +1,30 @@
+# Node modules
+node_modules/
+
+# Build output
+build/
+dist/
+.out/
+.next/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+
+# Optional cache dirs
+.cache/
+.parcel-cache/
