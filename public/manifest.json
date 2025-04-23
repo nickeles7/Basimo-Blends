@@ -1,0 +1,16 @@
+{
+    "short_name": "Basimo Blend",
+    "name": "Basimo Blend - Organic Za'atar",
+    "description": "Organic Za'atar spice blend crafted with love using 100% organic Mediterranean herbs",
+    "icons": [
+      {
+        "src": "/Transparent_Logo.png",
+        "sizes": "512x512",
+        "type": "image/webp"
+      }
+    ],
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#5c8d76",
+    "background_color": "#ffffff"
+  }
