@@ -46,7 +46,7 @@ const IngredientsList = ({ title, ingredients, style }) => {
         </div>
         
         <div className="ingredients-note">
-          <p>All ingredients are certified organic and sourced from trusted farms with sustainable practices.</p>
+          <p>Our Ingredients are always Organic, Fresh & Aromatic...</p>
         </div>
       </div>
     </section>

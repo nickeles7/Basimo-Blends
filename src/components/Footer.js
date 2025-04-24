@@ -44,9 +44,9 @@ const Footer = ({ content, style }) => {
   
   // Map section IDs to their respective links
   const sectionMapping = {
-    'about-us': 'mission',
-    'shop': 'shop',
-    'contact': 'footer'
+    ' ': 'mission',
+    ' ': 'shop',
+    ' ': 'footer'
   };
   
   return (
@@ -58,9 +58,9 @@ const Footer = ({ content, style }) => {
       <div className="footer-container">
         {content.newsletter_signup && (
           <div className="footer-newsletter">
-            <h3 className="newsletter-title">Join Our Newsletter</h3>
+            <h3 className="newsletter-title">Lets stay in touch...</h3>
             <p className="newsletter-description">
-              Stay updated with new recipes, special offers, and the latest from Basimo Blends.
+              Where we share new Basimo Blends, Recipes for the new Blends and more...
             </p>
             
             <form className="newsletter-form" onSubmit={handleSubscribe}>
@@ -68,7 +68,7 @@ const Footer = ({ content, style }) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email address"
+                placeholder="basimoblends@gmail.com"
                 required
                 className="newsletter-input"
               />
@@ -118,7 +118,7 @@ const Footer = ({ content, style }) => {
           
           <div className="footer-logo">
             <h3 className="footer-brand">Basimo Blends</h3>
-            <p className="footer-tagline">Organic Za'atar • Hand-crafted with love</p>
+            <p className="footer-tagline">The Spices of Life</p>
           </div>
         </div>
         
@@ -149,7 +149,7 @@ const getSocialLink = (social) => {
   // Actual social media profiles with correct links
   const socialLinks = {
     instagram: 'https://www.instagram.com/basimoblends/',
-    email: 'mailto:hello@basimoblend.com'
+    email: 'mailto:basimoblends@gmail.com'
   };
   return socialLinks[social] || '#';
 };

@@ -19,9 +19,7 @@ const Mission = ({ title, content, style }) => {
         <div className="mission-story">
           <h3 className="story-title">Our Story</h3>
           <p className="story-text">
-            Basimo Blends began in our family kitchen, where traditional Middle Eastern recipes have been passed down for generations. 
-            Our Za'atar blend combines these time-honored traditions with modern nutritional knowledge, creating a product 
-            that honors heritage while embracing innovation.
+            (Basimo) in the Aramaic language means 'delicious' Blends are what we enjoy using in the kitchen!  Blending Herbs and Spices that we believe are the key to 'delicious' simplicity!
           </p>
         </div>
       </div>
