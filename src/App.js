@@ -1,9 +1,8 @@
 // App.js - Main Container Component
-import React from 'react';
+import React, { useEffect } from 'react';
 import './styles/App.css';
 import { ShopProvider } from './context/ShopContext';
 import Header from './components/Header';
-// Remove the unused Hero import
 import HeroSlideshow from './components/HeroSlideshow';
 import ProductShowcase from './components/ProductShowcase';
 import IngredientsList from './components/IngredientsList';
@@ -11,9 +10,29 @@ import Mission from './components/Mission';
 import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
 import Cart from './components/Cart';
+import { setupScrollNav } from './utils/scrollNavUtils';
+import './utils/smoothscroll'; // Import the smoothscroll polyfill
+import './styles/SectionSpacing.css';
 
 function App() {
   console.log('App component rendering'); // Debug log
+  
+  // Set up scroll navigation when component mounts
+  useEffect(() => {
+    setupScrollNav();
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        document.body.classList.add('scrolled-header');
+      } else {
+        document.body.classList.remove('scrolled-header');
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   
   // Data structure that could be fetched from Shopify or CMS
   const pageData = {
@@ -23,9 +42,9 @@ function App() {
       content: {
         logo: {
           image: "/Transparent_Logo.webp",
-          alt: "Basimo Blend Logo",
+          alt: "Basimo Blends Logo",
           link: "/",
-          text: "Basimo Blend",
+          text: "Basimo Blends",
           style: {
             font_weight: "bold",
             font_size: "1.25rem",
@@ -35,10 +54,9 @@ function App() {
           }
         },
         navigation: [
-          { label: "Home", link: "/" },
-          { label: "Shop", link: "/shop" },
-          { label: "Our Mission", link: "#mission" },
-          { label: "Contact", link: "#footer" }
+          { label: "Shop", link: "#shop" },
+          { label: "The Mission", link: "#mission" },
+          { label: "Connect", link: "#footer" }
         ],
         cart_icon: {
           visible: true,
@@ -78,7 +96,7 @@ function App() {
     homepage: {
       sections: [
         {
-          id: "hero",
+          id: "place",
           type: "image_slideshow",
           content: {
             images: [
@@ -86,11 +104,11 @@ function App() {
               "/images/hero-labneh-flatbread.jpg",
               "/images/hero-roasted-veggie-bowl.jpg"
             ],
-            headline: "Za'atar. Simple. Organic. Bold.",
-            subtext: "Crafted with love using 100% organic Mediterranean herbs",
+            headline: "Za'atar ~ Simplicity ~ Organic Delicious!",
+            subtext: "~ Created with love using the freshest flavorful aromatic Organic Herbs ~",
             button: {
-              text: "Shop Now",
-              link: "/shop"
+              text: "SHOP HERE",
+              link: "#shop"
             }
           },
           style: {
@@ -101,20 +119,20 @@ function App() {
           }
         },
         {
-          id: "product",
+          id: "shop",
           type: "product_showcase",
           content: {
-            title: "Our Products",
-            description: "Handcrafted with care, our organic blends bring Mediterranean flavors to your kitchen.",
+            title: "The Goods",
+            description: "Small batches of carefully selected Organic Ingredients are combined to bring the BEST Flavors to spice up your cullinary journey.",
             products: [
               {
-                product_name: "Basimo Blend Organic Za'atar",
+                product_name: "Basimo Blends Organic Za'atar",
                 price: "$10.95",
                 image: "/images/zaatar_2.png",
-                description: "Our signature Basimo Blend Za'atar is a versatile organic spice mix, handcrafted in small batches with premium ingredients. Perfect for dipping with olive oil, sprinkling on flatbreads, seasoning roasted vegetables, or elevating any Mediterranean dish.",
-                size: "2.5 oz (70g) jar",
-                shopify_product_id: "", // Will be filled with actual Shopify product ID
-                shopify_variant_id: "", // Will be filled with actual Shopify variant ID
+                description: "Our signature Basimo Blends Za'atar is a versatile organic spice mix, handcrafted in small batches...",
+                size: "2.1 oz (60g) jar",
+                shopify_product_id: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ2MDg4MzI3NjYwOTE=",
+                shopify_variant_id: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zMjYwODk0MDU1NjQyNw==",
                 button: {
                   text: "Add to Cart",
                   action: "shopify:add_to_cart"
@@ -124,15 +142,15 @@ function App() {
                 product_name: "Organic Turkish Coffee Blend",
                 price: "$10.99",
                 image: "/images/zaatar_1.png",
-                description: "A blend of finely ground organic ingredients including Organic Arabica Beans. Experience the rich, aromatic flavor of traditional Turkish coffee with our carefully crafted blend.",
+                description: "A blend of finely ground organic ingredients including Organic Arabica Beans...",
                 size: "2.5 oz (70g) jar",
-                shopify_product_id: "", // Will be filled with actual Shopify product ID
-                shopify_variant_id: "", // Will be filled with actual Shopify variant ID
+                shopify_product_id: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ3ODg3NTY3MDk1MTU=",
+                shopify_variant_id: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80NjQ5MTY3MjQ3Nzg0OA==",
                 button: {
                   text: "Add to Cart",
                   action: "shopify:add_to_cart"
                 }
-              }
+              }              
             ]
           },
           style: {
@@ -166,7 +184,7 @@ function App() {
         {
           id: "mission",
           type: "text_block",
-          title: "Our Mission",
+          title: "The Mission",
           content: "The energy that goes into our products: Care ~ Consideration ~ Love",
           style: {
             background: "white",
@@ -213,42 +231,54 @@ function App() {
           content={pageData.header.content}
           style={pageData.header.style}
         />
-        <HeroSlideshow
-          images={pageData.homepage.sections[0].content.images}
-          headline={pageData.homepage.sections[0].content.headline}
-          subtext={pageData.homepage.sections[0].content.subtext}
-          button={pageData.homepage.sections[0].content.button}
-          style={pageData.homepage.sections[0].style}
-        />
+        <section id="place">
+          <HeroSlideshow
+            images={pageData.homepage.sections[0].content.images}
+            headline={pageData.homepage.sections[0].content.headline}
+            subtext={pageData.homepage.sections[0].content.subtext}
+            button={pageData.homepage.sections[0].content.button}
+            style={pageData.homepage.sections[0].style}
+          />
+        </section>
         
-        <ProductShowcase 
-          title={pageData.homepage.sections[1].content.title}
-          description={pageData.homepage.sections[1].content.description}
-          products={pageData.homepage.sections[1].content.products}
-          style={pageData.homepage.sections[1].style}
-        />
+        <section id="shop">
+          <ProductShowcase 
+            title={pageData.homepage.sections[1].content.title}
+            description={pageData.homepage.sections[1].content.description}
+            products={pageData.homepage.sections[1].content.products}
+            style={pageData.homepage.sections[1].style}
+          />
+        </section>
         
-        <IngredientsList 
-          title={pageData.homepage.sections[2].title}
-          ingredients={pageData.homepage.sections[2].content}
-          style={pageData.homepage.sections[2].style}
-        />
+        <section id="ingredients">
+          <IngredientsList 
+            title={pageData.homepage.sections[2].title}
+            ingredients={pageData.homepage.sections[2].content}
+            style={pageData.homepage.sections[2].style}
+          />
+        </section>
         
-        <Mission 
-          title={pageData.homepage.sections[3].title}
-          content={pageData.homepage.sections[3].content}
-          style={pageData.homepage.sections[3].style}
-        />
+        <section id="mission">
+          <Mission 
+            title={pageData.homepage.sections[3].title}
+            content={pageData.homepage.sections[3].content}
+            style={pageData.homepage.sections[3].style}
+          />
+        </section>
         
-        <Testimonials 
-          reviews={pageData.homepage.sections[4].content}
-          style={pageData.homepage.sections[4].style}
-        />
+        <section id="reviews">
+          <Testimonials 
+            reviews={pageData.homepage.sections[4].content}
+            style={pageData.homepage.sections[4].style}
+          />
+        </section>
         
-        <Footer 
-          content={pageData.homepage.sections[5].content}
-          style={pageData.homepage.sections[5].style}
-        />
+        <section id="footer">
+          <Footer 
+            content={pageData.homepage.sections[5].content}
+            style={pageData.homepage.sections[5].style}
+          />
+        </section>
         
         <Cart />
       </div>
