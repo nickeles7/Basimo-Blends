@@ -7,6 +7,58 @@ const Cart = () => {
   
   if (!isCartOpen) return null;
   
+  // Handle checkout button click - FIXED WITH DOMAIN CORRECTION
+  const handleCheckout = () => {
+    if (checkout && checkout.lineItems && checkout.lineItems.length > 0) {
+      console.log("🔍 Checkout/Cart object:", checkout);
+      console.log("🔍 Checkout/Cart WebURL:", checkout?.webUrl);
+  
+      if (process.env.REACT_APP_SHOPIFY_DOMAIN) {
+        // In production with real Shopify credentials
+        try {
+          // CRITICAL FIX: Replace basimoblends.com with the actual myshopify domain
+          // The webUrl is pointing to basimoblends.com but that domain isn't configured properly
+          if (checkout.webUrl) {
+            // Replace the domain in the URL
+            const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN;
+            const cartPath = checkout.webUrl.split('/cart')[1]; // Get the /c/... part
+            
+            if (cartPath) {
+              // Construct direct URL to Shopify's domain instead of the custom domain
+              const fixedCheckoutUrl = `https://${shopifyDomain}/cart${cartPath}`;
+              console.log('✅ Redirecting to fixed Shopify cart URL:', fixedCheckoutUrl);
+              window.location.href = fixedCheckoutUrl;
+              return;
+            }
+            
+            // If we couldn't parse the URL properly, just redirect to the cart
+            console.log('⚠️ Could not parse Cart URL, using direct cart link');
+            window.location.href = `https://${shopifyDomain}/cart`;
+            return;
+          } 
+          
+          // Fallback if webUrl is missing (shouldn't happen)
+          const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN;
+          console.log('⚠️ Fallback: Redirecting to direct cart URL');
+          window.location.href = `https://${shopifyDomain}/cart`;
+        } catch (error) {
+          console.error('❌ Error during checkout redirect:', error);
+          
+          // Last-resort fallback
+          const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN;
+          window.location.href = `https://${shopifyDomain}/cart`;
+        }
+      } else {
+        // For development without Shopify credentials
+        console.log('🚧 Checkout not available in development mode');
+        alert('This is a development environment. In production, this would redirect to the Shopify checkout.');
+      }
+    } else {
+      // Cart is empty, let the user know
+      alert('🛒 Your cart is empty. Please add items before checking out.');
+    }
+  };
+  
   return (
     <div className="cart-overlay">
       <div className="cart-drawer">
@@ -46,7 +98,9 @@ const Cart = () => {
                   </div>
                 </div>
                 <div className="cart-item-price-remove">
-                  <p className="cart-item-price">${item.variant.price}</p>
+                <p className="cart-item-price">
+                  ${item.variant.price ? item.variant.price.amount : '0.00'}
+                </p>
                   <button 
                     className="remove-item-btn"
                     onClick={() => removeItemFromCart(item.id)}
@@ -79,11 +133,11 @@ const Cart = () => {
           <div className="cart-footer">
             <div className="cart-total">
               <span>Total:</span>
-              <span>${checkout.totalPrice}</span>
+              <span>${checkout?.totalPrice?.amount || '0.00'}</span>
             </div>
             <button 
               className="checkout-button"
-              onClick={() => window.location.href = checkout.webUrl}
+              onClick={handleCheckout}
               disabled={isLoading}
             >
               Checkout

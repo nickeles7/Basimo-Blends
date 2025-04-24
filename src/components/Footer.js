@@ -16,6 +16,18 @@ const Footer = ({ content, style }) => {
     setTimeout(() => setSubscribed(false), 5000);
   };
   
+  // Handle smooth scrolling for footer links
+  const handleLinkClick = (e, target) => {
+    // Only handle internal links
+    if (target.startsWith('#')) {
+      e.preventDefault();
+      const element = document.getElementById(target.substring(1));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+  
   // Social media icons
   const socialIcons = {
     instagram: (
@@ -30,6 +42,13 @@ const Footer = ({ content, style }) => {
     )
   };
   
+  // Map section IDs to their respective links
+  const sectionMapping = {
+    'about-us': 'mission',
+    'shop': 'shop',
+    'contact': 'footer'
+  };
+  
   return (
     <footer className="site-footer" style={{
       backgroundColor: style.background,
@@ -41,7 +60,7 @@ const Footer = ({ content, style }) => {
           <div className="footer-newsletter">
             <h3 className="newsletter-title">Join Our Newsletter</h3>
             <p className="newsletter-description">
-              Stay updated with new recipes, special offers, and the latest from Basimo Blend.
+              Stay updated with new recipes, special offers, and the latest from Basimo Blends.
             </p>
             
             <form className="newsletter-form" onSubmit={handleSubscribe}>
@@ -66,48 +85,49 @@ const Footer = ({ content, style }) => {
         
         <div className="footer-content">
           <div className="footer-links">
-            {content.links.map((link, index) => (
-              <a key={index} href={`/${link.toLowerCase().replace(/\s+/g, '-')}`} className="footer-link">
-                {link}
+            {content.links.map((link, index) => {
+              const linkText = link.toLowerCase().replace(/\s+/g, '-');
+              const sectionId = sectionMapping[linkText] || linkText;
+              return (
+                <a 
+                  key={index} 
+                  href={`#${sectionId}`} 
+                  className="footer-link"
+                  onClick={(e) => handleLinkClick(e, `#${sectionId}`)}
+                >
+                  {link}
+                </a>
+              );
+            })}
+          </div>
+          
+          <div className="footer-social">
+            {content.social_links.map((social, index) => (
+              <a 
+                key={index} 
+                href={getSocialLink(social)}
+                className="social-link"
+                aria-label={`Follow us on ${social}`}
+                target={social !== 'email' ? '_blank' : ''}
+                rel={social !== 'email' ? 'noopener noreferrer' : ''}
+              >
+                {socialIcons[social] || social}
               </a>
             ))}
           </div>
           
-          {content.social_links.map((social, index) => (
-            <a 
-              key={index} 
-              href={getSocialLink(social)}
-              className="social-link"
-              aria-label={`Follow us on ${social}`}
-              target={social !== 'email' ? '_blank' : ''}
-              rel={social !== 'email' ? 'noopener noreferrer' : ''}
-            >
-              {socialIcons[social] || social}
-            </a>
-            ))}
-          
           <div className="footer-logo">
-            <h3 className="footer-brand">Basimo Blend</h3>
+            <h3 className="footer-brand">Basimo Blends</h3>
             <p className="footer-tagline">Organic Za'atar • Hand-crafted with love</p>
           </div>
         </div>
         
         <div className="footer-legal">
-          <p className="copyright">© {new Date().getFullYear()} Basimo Blend. All rights reserved.</p>
+          <p className="copyright">© {new Date().getFullYear()} Basimo Blends. All rights reserved.</p>
           <div className="legal-links">
             <a href="/privacy-policy" className="legal-link">Privacy Policy</a>
             <a href="/terms-of-service" className="legal-link">Terms of Service</a>
           </div>
-        </div>
-        
-        {/* Future Blog/Recipes Section Placeholder */}
-        <div className="footer-future-section">
-          <h3 className="future-section-title">Coming Soon:|---------|</h3>
-          <p className="future-section-description">
-            Exciting recipes, cooking tips, and food stories from our community.
-            <br />
-            <a href="/coming-soon" className="future-section-link">Learn More</a>
-          </p>
         </div>
       </div>
     </footer>

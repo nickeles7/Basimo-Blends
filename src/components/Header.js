@@ -32,14 +32,27 @@ const Header = ({ content, style }) => {
     setIsCartOpen(true);
   };
   
+  // Handle smooth scrolling to section when nav item is clicked
+  const handleNavClick = (e, target) => {
+    e.preventDefault();
+    
+    // Check if the href is an anchor link
+    if (target.startsWith('#')) {
+      const element = document.getElementById(target.substring(1));
+      if (element) {
+        // Smooth scroll to the element
+        element.scrollIntoView({ behavior: 'smooth' });
+        // Close mobile menu after navigation
+        setMobileMenuOpen(false);
+      }
+    } else {
+      // For non-anchor links, navigate normally
+      window.location.href = target;
+    }
+  };
+  
   return (
-    <header className={`site-header ${scrolled ? 'scrolled' : ''}`} style={{
-      position: style.position,
-      top: style.top === 0 ? '0' : style.top,
-      zIndex: style.z_index,
-      backgroundColor: style.background,
-      padding: style.padding
-    }}>
+    <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
       <div className="header-container" style={{
         gap: style.gap
       }}>
@@ -47,14 +60,13 @@ const Header = ({ content, style }) => {
           <a href={content.logo.link} className="logo-link">
             <img 
               src="/Transparent_Logo.png"
-              alt="Basimo Blend Logo"
-              className="site-logo-image" 
+              alt="Basimo Blends Logo"
+              className={`site-logo-image ${scrolled ? 'scrolled' : ''}`}
             />
             
             {content.logo.text && content.logo.style.display_inline_with_logo && (
               <span className="site-logo-text" style={{
                 fontWeight: content.logo.style.font_weight,
-                fontSize: content.logo.style.font_size,
                 color: content.logo.style.color,
                 letterSpacing: content.logo.style.tracking === 'wide' ? '0.05em' : 'normal'
               }}>
@@ -71,7 +83,7 @@ const Header = ({ content, style }) => {
                 <a 
                   href={item.link} 
                   className="nav-link"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => handleNavClick(e, item.link)}
                   style={{
                     transition: style.hover_effect?.nav_links?.transition
                   }}

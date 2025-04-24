@@ -34,6 +34,24 @@ const Testimonials = ({ reviews, style }) => {
     setCurrentIndex(index);
   };
   
+  // Handle the Shop Now button click with header offset
+  const handleShopNowClick = () => {
+    const shopSection = document.getElementById('shop');
+    if (shopSection) {
+      // Get header height for proper offset
+      const headerHeight = document.querySelector('.site-header').offsetHeight;
+      
+      // Calculate the actual scroll position with offset
+      const targetPosition = shopSection.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+      
+      // Scroll to the target with offset
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+  
   return (
     <section className="testimonials-section" style={{
       backgroundColor: style.background,
@@ -73,7 +91,12 @@ const Testimonials = ({ reviews, style }) => {
         
         <div className="review-cta">
           <p>Join our growing family of satisfied customers.</p>
-          <button className="review-cta-button">Shop Now</button>
+          <button 
+            className="review-cta-button"
+            onClick={handleShopNowClick}
+          >
+            Shop Now
+          </button>
         </div>
       </div>
     </section>

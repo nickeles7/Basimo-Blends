@@ -23,7 +23,7 @@ const Hero = ({ image, headline, subtext, button, style }) => {
         <div className="hero-image-container">
           <img
             src={image}
-            alt="Basimo Blend Za'atar"
+            alt="Basimo Blends Za'atar"
             className={`hero-image ${getImageSizeClass(style.image_size)}`}
           />
           {/* Image placeholder comment */}

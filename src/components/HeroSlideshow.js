@@ -26,6 +26,34 @@ const HeroSlideshow = ({ images, headline, subtext, button, style, interval = 50
   const prevSlide = () => {
     setCurrentSlide((prevSlide) => (prevSlide - 1 + images.length) % images.length);
   };
+  
+  // Handle button click for smooth scrolling with header offset
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    
+    // Check if the button link is an anchor
+    if (button.link.startsWith('#')) {
+      const targetId = button.link.substring(1);
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        // Get header height for proper offset
+        const headerHeight = document.querySelector('.site-header').offsetHeight;
+        
+        // Calculate the actual scroll position with offset
+        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+        
+        // Scroll to the target with offset
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    } else {
+      // For non-anchor links, navigate normally
+      window.location.href = button.link;
+    }
+  };
 
   return (
     <section className="hero-slideshow" style={{
@@ -43,7 +71,7 @@ const HeroSlideshow = ({ images, headline, subtext, button, style, interval = 50
             <div className="slide-image-container">
               <img
                 src={image}
-                alt={`Basimo Blend - Slide ${index + 1}`}
+                alt={`Basimo Blends - Slide ${index + 1}`}
                 className={`slide-image ${getImageSizeClass(style.image_size)}`}
               />
             </div>
@@ -55,7 +83,7 @@ const HeroSlideshow = ({ images, headline, subtext, button, style, interval = 50
           <p className="hero-subtext">{subtext}</p>
           <button 
             className="cta-button"
-            onClick={() => window.location.href = button.link}
+            onClick={handleButtonClick}
           >
             {button.text}
           </button>

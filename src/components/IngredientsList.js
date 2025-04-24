@@ -27,7 +27,7 @@ const IngredientsList = ({ title, ingredients, style }) => {
       <div className="ingredients-container">
         <h2 className="ingredients-title">{title}</h2>
         <p className="ingredients-intro">
-          Each ingredient in our Basimo Blend is thoughtfully selected for quality, flavor, and health benefits.
+          Each ingredient in our Basimo Blends is thoughtfully selected for quality, flavor, and health benefits.
         </p>
         
         <div className="ingredients-grid">

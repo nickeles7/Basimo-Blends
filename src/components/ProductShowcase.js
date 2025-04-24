@@ -14,14 +14,12 @@ const ProductShowcase = ({ title, description, products, style }) => {
     console.log(`Adding ${quantities[index]} of ${products[index].product_name} to cart`);
     
     // This will be uncommented once Shopify credentials are available
-    /*
     if (products[index].shopify_variant_id) {
       await addItemToCart(
         products[index].shopify_variant_id,
         quantities[index]
       );
     }
-    */
   };
 
   const increaseQuantity = (index) => {
