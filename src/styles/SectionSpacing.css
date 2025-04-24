@@ -1,0 +1,38 @@
+/* Add this to your App.css or create a new file called SectionSpacing.css */
+
+/* Adjust section spacing to account for fixed header */
+section {
+    scroll-margin-top: 100px; /* Increased from 100px to 150px */
+    padding-top: 2rem; /* Increased from 2rem to 3rem */
+    padding-bottom: 2rem;
+  }
+  
+  /* When header is in scrolled state, adjust the scroll margin */
+  body.scrolled-header section {
+    scroll-margin-top: 90px; /* Increased from 70px to 120px */
+  }
+  
+  /* Individual section spacing adjustments if needed */
+  #shop {
+    scroll-margin-top: 21px;
+  }
+  
+  #mission {
+    scroll-margin-top: 20px;
+    padding-top: 2rem; /* Extra padding for the mission section */
+  }
+  
+  #reviews {
+    scroll-margin-top: 100px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 767px) {
+    section {
+      scroll-margin-top: 140px; /* Increased from 90px to 140px */
+    }
+    
+    body.scrolled-header section {
+      scroll-margin-top: 120px; /* Increased from 70px to 120px */
+    }
+  }
