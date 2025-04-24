@@ -20,8 +20,8 @@ export const ShopProvider = ({ children }) => {
 
   const initializeCheckout = async () => {
     // ✅ Diagnostic logs to verify env variables are loaded in the browser
-    console.log("🧪 [ENV] Domain:", process.env.REACT_APP_SHOPIFY_DOMAIN);
-    console.log("🧪 [ENV] Token:", process.env.REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN);
+    // console.log("🧪 [ENV] Domain:", process.env.REACT_APP_SHOPIFY_DOMAIN);
+    // console.log("🧪 [ENV] Token:", process.env.REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN);
   
     try {
       console.log('Initializing Shopify checkout with domain:', process.env.REACT_APP_SHOPIFY_DOMAIN);
