@@ -19,7 +19,8 @@ const Mission = ({ title, content, style }) => {
         <div className="mission-story">
           <h3 className="story-title">Our Story</h3>
           <p className="story-text">
-            (Basimo) in the Aramaic language means 'delicious' Blends are what we enjoy using in the kitchen!  Blending Herbs and Spices that we believe are the key to 'delicious' simplicity!
+          (Basimo) in the Aramaic language means ‘delicious'
+          Basimo Blends are what we enjoy using in the kitchen! Blending Herbs and Spices that we believe are the key to 'healthy deliciousness’ ;D
           </p>
         </div>
       </div>
