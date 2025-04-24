@@ -212,7 +212,7 @@ function App() {
           content: {
             newsletter_signup: true,
             social_links: ["instagram", "email"],
-            links: ["About Us", "Shop", "Contact"]
+            links: [" ", " ", " "]
           },
           style: {
             background: "#eeeeee",
