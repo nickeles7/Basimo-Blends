@@ -104,7 +104,7 @@ function App() {
               "/images/hero-labneh-flatbread.jpg",
               "/images/hero-roasted-veggie-bowl.jpg"
             ],
-            headline: "Za'atar ~ Simplicity ~ Organic Delicious!",
+            headline: "Za'atar ~ Simplicity ~ Organic ~ Delicious!",
             subtext: "~ Created with love using the freshest flavorful aromatic Organic Herbs ~",
             button: {
               text: "SHOP HERE",
