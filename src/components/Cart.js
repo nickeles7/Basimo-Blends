@@ -3,62 +3,50 @@ import { ShopContext } from '../context/ShopContext';
 import '../styles/Cart.css';
 
 const Cart = () => {
-  const { checkout, isCartOpen, setIsCartOpen, removeItemFromCart, updateItemInCart, isLoading } = useContext(ShopContext);
-  
+  const { checkout, isCartOpen, setIsCartOpen, removeItemFromCart, updateItemInCart, isLoading, setIsLoading } = useContext(ShopContext);
+
   if (!isCartOpen) return null;
-  
-  // Handle checkout button click - FIXED WITH DOMAIN CORRECTION
+
+  // IMPROVED CHECKOUT WITH CART TRANSFER
   const handleCheckout = () => {
     if (checkout && checkout.lineItems && checkout.lineItems.length > 0) {
-      console.log("🔍 Checkout/Cart object:", checkout);
-      console.log("🔍 Checkout/Cart WebURL:", checkout?.webUrl);
-  
-      if (process.env.REACT_APP_SHOPIFY_DOMAIN) {
-        // In production with real Shopify credentials
-        try {
-          // CRITICAL FIX: Replace basimoblends.com with the actual myshopify domain
-          // The webUrl is pointing to basimoblends.com but that domain isn't configured properly
-          if (checkout.webUrl) {
-            // Replace the domain in the URL
-            const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN;
-            const cartPath = checkout.webUrl.split('/cart')[1]; // Get the /c/... part
-            
-            if (cartPath) {
-              // Construct direct URL to Shopify's domain instead of the custom domain
-              const fixedCheckoutUrl = `https://${shopifyDomain}/cart${cartPath}`;
-              console.log('✅ Redirecting to fixed Shopify cart URL:', fixedCheckoutUrl);
-              window.location.href = fixedCheckoutUrl;
-              return;
-            }
-            
-            // If we couldn't parse the URL properly, just redirect to the cart
-            console.log('⚠️ Could not parse Cart URL, using direct cart link');
-            window.location.href = `https://${shopifyDomain}/cart`;
-            return;
-          } 
-          
-          // Fallback if webUrl is missing (shouldn't happen)
-          const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN;
-          console.log('⚠️ Fallback: Redirecting to direct cart URL');
-          window.location.href = `https://${shopifyDomain}/cart`;
-        } catch (error) {
-          console.error('❌ Error during checkout redirect:', error);
-          
-          // Last-resort fallback
-          const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN;
-          window.location.href = `https://${shopifyDomain}/cart`;
-        }
-      } else {
-        // For development without Shopify credentials
-        console.log('🚧 Checkout not available in development mode');
-        alert('This is a development environment. In production, this would redirect to the Shopify checkout.');
+      // Show a friendly loading message to explain the domain change
+      setIsLoading(true);
+
+      // Get the Shopify domain from environment or use the hardcoded value as fallback
+      const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN || "basimo-beach-cafe.myshopify.com";
+
+      // Create a cart URL that will work with your items
+      let directCartUrl = `https://${shopifyDomain}/cart`;
+
+      // If we have line items, add them to the URL as parameters
+      // This ensures the cart items transfer even if cookies don't
+      if (checkout.lineItems && checkout.lineItems.length > 0) {
+        // Add each item as a URL parameter
+        checkout.lineItems.forEach((item, index) => {
+          // Format: /cart/{variant_id}:{quantity}
+          if (index === 0) {
+            directCartUrl += '/';
+          } else {
+            directCartUrl += ',';
+          }
+          directCartUrl += `${item.variant.id.split('/').pop()}:${item.quantity}`;
+        });
       }
+
+      console.log('✅ Redirecting to Shopify cart with items:', directCartUrl);
+
+      // Show a user-friendly message before redirecting
+      alert("You'll now be redirected to our secure checkout page. Thank you for shopping with Basimo Blend!");
+
+      // Redirect to the Shopify cart
+      window.location.href = directCartUrl;
     } else {
       // Cart is empty, let the user know
       alert('🛒 Your cart is empty. Please add items before checking out.');
     }
   };
-  
+
   return (
     <div className="cart-overlay">
       <div className="cart-drawer">
@@ -70,7 +58,7 @@ const Cart = () => {
             </svg>
           </button>
         </div>
-        
+
         <div className="cart-items">
           {checkout && checkout.lineItems && checkout.lineItems.length > 0 ? (
             checkout.lineItems.map(item => (
@@ -84,13 +72,13 @@ const Cart = () => {
                   <h3 className="cart-item-title">{item.title}</h3>
                   <p className="cart-item-variant">{item.variant.title !== 'Default Title' ? item.variant.title : ''}</p>
                   <div className="cart-item-quantity">
-                    <button 
+                    <button
                       className="quantity-btn"
                       onClick={() => updateItemInCart(item.id, Math.max(1, item.quantity - 1))}
                       disabled={isLoading}
                     >−</button>
                     <span className="quantity-value">{item.quantity}</span>
-                    <button 
+                    <button
                       className="quantity-btn"
                       onClick={() => updateItemInCart(item.id, item.quantity + 1)}
                       disabled={isLoading}
@@ -101,7 +89,7 @@ const Cart = () => {
                 <p className="cart-item-price">
                   ${item.variant.price ? item.variant.price.amount : '0.00'}
                 </p>
-                  <button 
+                  <button
                     className="remove-item-btn"
                     onClick={() => removeItemFromCart(item.id)}
                     disabled={isLoading}
@@ -119,7 +107,7 @@ const Cart = () => {
                 <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5.5C20.96 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z" fill="#999"/>
               </svg>
               <p>Your cart is empty</p>
-              <button 
+              <button
                 className="continue-shopping"
                 onClick={() => setIsCartOpen(false)}
               >
@@ -128,19 +116,19 @@ const Cart = () => {
             </div>
           )}
         </div>
-        
+
         {checkout && checkout.lineItems && checkout.lineItems.length > 0 && (
           <div className="cart-footer">
             <div className="cart-total">
               <span>Total:</span>
               <span>${checkout?.totalPrice?.amount || '0.00'}</span>
             </div>
-            <button 
+            <button
               className="checkout-button"
               onClick={handleCheckout}
               disabled={isLoading}
             >
-              Checkout
+              {isLoading ? 'Preparing Checkout...' : 'Checkout'}
             </button>
           </div>
         )}

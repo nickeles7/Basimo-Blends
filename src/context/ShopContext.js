@@ -19,79 +19,55 @@ export const ShopProvider = ({ children }) => {
   }, []);
 
   const initializeCheckout = async () => {
-    // ✅ Diagnostic logs to verify env variables are loaded in the browser
-    // console.log("🧪 [ENV] Domain:", process.env.REACT_APP_SHOPIFY_DOMAIN);
-    // console.log("🧪 [ENV] Token:", process.env.REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN);
-  
+    // Enable diagnostic logs to help troubleshoot
+    console.log("🧪 [ENV] Domain:", process.env.REACT_APP_SHOPIFY_DOMAIN);
+    console.log("🧪 [ENV] Token:", process.env.REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN ? "Present (hidden for security)" : "Missing");
+
     try {
       console.log('Initializing Shopify checkout with domain:', process.env.REACT_APP_SHOPIFY_DOMAIN);
-      
-      // Try to fetch an existing checkout from localStorage
-      const checkoutId = localStorage.getItem('checkoutId');
 
-      // FIXED: Accept Cart IDs and don't try to validate as Checkout IDs
-      if (checkoutId) {
-        try {
-          console.log('Attempting to fetch existing checkout/cart:', checkoutId);
-          const existingCheckout = await shopifyClient.checkout.fetch(checkoutId);
-          
-          console.log('Existing checkout/cart details:', {
-            id: existingCheckout.id,
-            webUrl: existingCheckout.webUrl,
-            completedAt: existingCheckout.completedAt,
-            lineItems: existingCheckout.lineItems?.length || 0
-          });
-      
-          // Only use the existing checkout if it's not already completed
-          if (existingCheckout && !existingCheckout.completedAt) {
-            console.log('Using existing checkout/cart');
-            setCheckout(existingCheckout);
-            return;
-          } else {
-            console.log('Existing checkout/cart was already completed, creating new one');
-            localStorage.removeItem('checkoutId');
-          }
-        } catch (error) {
-          console.log('Error fetching existing checkout/cart, creating new one:', error);
-          localStorage.removeItem('checkoutId');
-        }
-      } else {
-        console.log('⚠️ No checkout/cart ID found in localStorage. Creating fresh checkout/cart.');
-      }
-      
-      // Create a new checkout/cart
+      // Clear any existing checkout to start fresh
+      localStorage.removeItem('checkoutId');
+      console.log('⚠️ Cleared existing checkout ID for fresh start');
+
+      // Create a new checkout/cart with explicit attributes
       console.log('Creating new Shopify checkout/cart');
-      const newCheckout = await shopifyClient.checkout.create();
-      
+      const newCheckout = await shopifyClient.checkout.create({
+        lineItems: [],
+        customAttributes: [
+          { key: 'source', value: 'basimo-blend-website' }
+        ]
+      });
+
       console.log("🧪 checkout.webUrl (initial):", newCheckout.webUrl);
       console.log('New checkout/cart created:', {
         id: newCheckout.id,
         webUrl: newCheckout.webUrl
       });
-      
+
       localStorage.setItem('checkoutId', newCheckout.id);
       setCheckout(newCheckout);
     } catch (error) {
       console.error('Failed to initialize checkout/cart', error);
-      
+
       if (error.message && error.message.includes('domain')) {
         console.error('Shopify client configuration error. Check your REACT_APP_SHOPIFY_DOMAIN and REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN');
       }
-      
+
       // Fallback to mock checkout for development
       console.log('Falling back to mock checkout/cart');
       createMockCheckout();
     }
   };
-  
+
 
   // Mock checkout for development without Shopify credentials
   const createMockCheckout = () => {
     console.log('Creating mock checkout/cart for development');
-    
+
     // Get domain from env or use default
     const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN || 'basimo-beach-cafe.myshopify.com';
-    
+
     // Create a realistic mock checkout object - matching what's coming from the API
     const mockCheckout = {
       id: 'mock-cart-id-' + Date.now(),
@@ -108,7 +84,7 @@ export const ShopProvider = ({ children }) => {
       taxesIncluded: false,
       totalTax: { amount: '0.00', currencyCode: 'USD' }
     };
-    
+
     console.log('Created mock checkout/cart with webUrl:', mockCheckout.webUrl);
     setCheckout(mockCheckout);
   };
@@ -121,23 +97,23 @@ export const ShopProvider = ({ children }) => {
           // Real Shopify integration
           const lineItemsToAdd = [{variantId, quantity}];
           console.log('Adding item to Shopify checkout/cart:', checkout.id, lineItemsToAdd);
-          
+
           try {
             const newCheckout = await shopifyClient.checkout.addLineItems(
               checkout.id,
               lineItemsToAdd
             );
-            
+
             console.log('Updated checkout/cart received from Shopify:', newCheckout);
             console.log('Checkout/Cart URL:', newCheckout.webUrl);
-            
+
             setCheckout(newCheckout);
           } catch (shopifyError) {
             console.error('Shopify API error:', shopifyError);
-            
+
             // If the checkout/cart might be expired or invalid, try creating a new one
             if (shopifyError.message && (
-                shopifyError.message.includes('not found') || 
+                shopifyError.message.includes('not found') ||
                 shopifyError.message.includes('expired') ||
                 shopifyError.message.includes('invalid')
               )) {
@@ -145,14 +121,14 @@ export const ShopProvider = ({ children }) => {
               const newCheckout = await shopifyClient.checkout.create();
               console.log("🧪 checkout.webUrl", newCheckout.webUrl);
               localStorage.setItem('checkoutId', newCheckout.id);
-              
+
               // Try adding the item to the new checkout/cart
               try {
                 const updatedCheckout = await shopifyClient.checkout.addLineItems(
                   newCheckout.id,
                   lineItemsToAdd
                 );
-                
+
                 setCheckout(updatedCheckout);
               } catch (error) {
                 console.error('Failed to add item to new checkout/cart:', error);
@@ -175,20 +151,20 @@ export const ShopProvider = ({ children }) => {
             },
             quantity
           };
-          
+
           // Create updated checkout with mock item
           const updatedLineItems = [...checkout.lineItems, mockItem];
           const totalAmount = updatedLineItems.reduce(
-            (sum, item) => sum + parseFloat(item.variant.price.amount) * item.quantity, 
+            (sum, item) => sum + parseFloat(item.variant.price.amount) * item.quantity,
             0
           ).toFixed(2);
-          
+
           const newCheckout = {
             ...checkout,
             lineItems: updatedLineItems,
             totalPrice: { amount: totalAmount, currencyCode: 'USD' }
           };
-          
+
           setCheckout(newCheckout);
         }
       }
@@ -213,10 +189,10 @@ export const ShopProvider = ({ children }) => {
             setCheckout(newCheckout);
           } catch (error) {
             console.error('Failed to remove item - API error:', error);
-            
+
             // If checkout is invalid, try recreating it
             if (error.message && (
-                error.message.includes('not found') || 
+                error.message.includes('not found') ||
                 error.message.includes('expired') ||
                 error.message.includes('invalid')
               )) {
@@ -229,16 +205,16 @@ export const ShopProvider = ({ children }) => {
           // Mock implementation for development
           const updatedLineItems = checkout.lineItems.filter(item => item.id !== lineItemId);
           const totalAmount = updatedLineItems.reduce(
-            (sum, item) => sum + parseFloat(item.variant.price.amount) * item.quantity, 
+            (sum, item) => sum + parseFloat(item.variant.price.amount) * item.quantity,
             0
           ).toFixed(2);
-          
+
           const newCheckout = {
             ...checkout,
             lineItems: updatedLineItems,
             totalPrice: { amount: totalAmount, currencyCode: 'USD' }
           };
-          
+
           setCheckout(newCheckout);
         }
       }
@@ -263,10 +239,10 @@ export const ShopProvider = ({ children }) => {
             setCheckout(newCheckout);
           } catch (error) {
             console.error('Failed to update item - API error:', error);
-            
+
             // If checkout is invalid, try recreating it
             if (error.message && (
-                error.message.includes('not found') || 
+                error.message.includes('not found') ||
                 error.message.includes('expired') ||
                 error.message.includes('invalid')
               )) {
@@ -283,18 +259,18 @@ export const ShopProvider = ({ children }) => {
             }
             return item;
           });
-          
+
           const totalAmount = updatedLineItems.reduce(
-            (sum, item) => sum + parseFloat(item.variant.price.amount) * item.quantity, 
+            (sum, item) => sum + parseFloat(item.variant.price.amount) * item.quantity,
             0
           ).toFixed(2);
-          
+
           const newCheckout = {
             ...checkout,
             lineItems: updatedLineItems,
             totalPrice: { amount: totalAmount, currencyCode: 'USD' }
           };
-          
+
           setCheckout(newCheckout);
         }
       }
@@ -310,6 +286,7 @@ export const ShopProvider = ({ children }) => {
       checkout,
       isCartOpen,
       isLoading,
+      setIsLoading,
       setIsCartOpen,
       addItemToCart,
       removeItemFromCart,
