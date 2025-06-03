@@ -7,47 +7,33 @@ const Cart = () => {
 
   if (!isCartOpen) return null;
 
-  // PRODUCTION-READY SHOPIFY STOREFRONT API CHECKOUT
+  // PROPER SHOPIFY CART URL CHECKOUT
   const handleCheckout = () => {
     if (checkout && checkout.lineItems && checkout.lineItems.length > 0) {
       setIsLoading(true);
 
-      // Use the Shopify Storefront API checkout URL (webUrl) - this is the proper way
-      let checkoutUrl = checkout.webUrl;
+      // Build the proper Shopify cart URL with variant IDs
+      const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN || "basimo-beach-cafe.myshopify.com";
+      let checkoutUrl = `https://${shopifyDomain}/cart`;
 
-      console.log('🛒 Checkout object:', checkout);
-      console.log('📦 Cart items:', checkout.lineItems.length);
-      console.log('🛒 Total price:', checkout.totalPrice?.amount || '0.00');
-      console.log('🔗 Checkout webUrl:', checkoutUrl);
+      // Add items to cart URL using variant IDs in the format: /cart/variant_id:quantity,variant_id:quantity
+      if (checkout.lineItems && checkout.lineItems.length > 0) {
+        const cartItems = checkout.lineItems.map(item => {
+          // Extract variant ID from the full Shopify ID (remove the gid://shopify/ProductVariant/ prefix)
+          const variantId = item.variant.id.split('/').pop();
+          return `${variantId}:${item.quantity}`;
+        }).join(',');
 
-      // Validate that we have a proper Shopify checkout URL
-      if (!checkoutUrl || checkoutUrl.includes('mock')) {
-        console.error('❌ Invalid checkout URL. Creating new checkout...');
-
-        // If we don't have a valid checkout URL, try to create a new checkout
-        // This should not happen in production with proper Shopify integration
-        const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN || "basimo-beach-cafe.myshopify.com";
-        checkoutUrl = `https://${shopifyDomain}/cart`;
-
-        // Add items to cart URL using variant IDs
-        if (checkout.lineItems && checkout.lineItems.length > 0) {
-          const cartItems = checkout.lineItems.map(item => {
-            // Extract variant ID from the full Shopify ID
-            const variantId = item.variant.id.split('/').pop();
-            return `${variantId}:${item.quantity}`;
-          }).join(',');
-
-          checkoutUrl = `https://${shopifyDomain}/cart/${cartItems}`;
-        }
-
-        console.log('🔄 Using fallback cart URL with items:', checkoutUrl);
+        checkoutUrl = `https://${shopifyDomain}/cart/${cartItems}`;
       }
+
+      console.log('🛒 Cart items:', checkout.lineItems.length);
+      console.log('🛒 Total price:', checkout.totalPrice?.amount || '0.00');
+      console.log('✅ Redirecting to Shopify cart:', checkoutUrl);
 
       // Show a user-friendly message before redirecting
       const itemCount = checkout.lineItems.reduce((total, item) => total + item.quantity, 0);
       const totalAmount = checkout.totalPrice?.amount || '0.00';
-
-      console.log('✅ Redirecting to checkout:', checkoutUrl);
 
       // For production, use a more professional confirmation
       // eslint-disable-next-line no-restricted-globals
