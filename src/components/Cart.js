@@ -50,6 +50,7 @@ const Cart = () => {
       console.log('✅ Redirecting to checkout:', checkoutUrl);
 
       // For production, use a more professional confirmation
+      // eslint-disable-next-line no-restricted-globals
       if (confirm(`Ready to checkout with ${itemCount} item(s) for $${totalAmount}? You'll be redirected to our secure Shopify checkout.`)) {
         // Redirect to the Shopify checkout
         window.location.href = checkoutUrl;
