@@ -147,7 +147,7 @@ export const ShopProvider = ({ children }) => {
             variant: {
               id: variantId,
               title: 'Default Title',
-              price: { amount: '10.95', currencyCode: 'USD' },
+              price: { amount: '11.95', currencyCode: 'USD' },
               image: { src: '/images/zaatar_2.png' }
             },
             quantity
