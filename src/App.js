@@ -104,7 +104,7 @@ function App() {
               "/images/hero-labneh-flatbread.jpg",
               "/images/hero-roasted-veggie-bowl.jpg"
             ],
-            headline: "Za'atar ~ Simplicity ~ Organic ~ Delicious!",
+            headline: "Created using the freshest, most flavorful, aromatic Organic Ingredients",
             subtext: "~ Created with love using the freshest flavorful aromatic Organic Herbs ~",
             button: {
               text: "SHOP HERE",
@@ -123,7 +123,7 @@ function App() {
           type: "product_showcase",
           content: {
             title: "The Goods",
-            description: "Small batches of carefully selected Organic Ingredients are combined to bring the BEST Flavors to spice up your cullinary journey.",
+            description: "Our handcrafted blends feature meticulously selected Organic Ingredients, designed to deliver vibrant flavors that elevate your culinary journey.",
             products: [
               {
                 product_name: "Basimo Blends Organic Za'atar",
@@ -185,7 +185,7 @@ function App() {
           id: "mission",
           type: "text_block",
           title: "The Mission",
-          content: "The energy that goes into our products: Care ~ Consideration ~ Love",
+          content: "The energy that goes into every product that we create: Care ~ Consideration ~ Love!",
           style: {
             background: "white",
             text_align: "center",
@@ -199,6 +199,10 @@ function App() {
             {
               quote: "Best za'atar I've ever had — it elevates everything from hummus to eggs!",
               name: "Verified Customer"
+            },
+            {
+              quote: "Basimo blend's Zaatar is so delicious! There's a perfectly balanced blend of organic ingredients giving it wonderful flavor, adding a healthy Middle Eastern flare to your food. I love it! It's now a staple in my household!",
+              name: "Malia"
             }
           ],
           style: {
