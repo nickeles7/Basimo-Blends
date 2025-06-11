@@ -127,7 +127,7 @@ function App() {
             products: [
               {
                 product_name: "Basimo Blends Organic Za'atar",
-                price: "$10.95",
+                price: "$11.95",
                 image: "/images/zaatar_2.png",
                 description: "Our signature Basimo Blends Za'atar is a versatile organic spice mix, handcrafted in small batches...",
                 size: "2.1 oz (60g) jar",
