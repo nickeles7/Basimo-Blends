@@ -104,8 +104,8 @@ function App() {
               "/images/hero-labneh-flatbread.jpg",
               "/images/hero-roasted-veggie-bowl.jpg"
             ],
-            headline: "Created using the freshest, most flavorful, aromatic Organic Ingredients",
-            subtext: "~ Created with love using the freshest flavorful aromatic Organic Herbs ~",
+            headline: "Delicious ~ Organic ~ Simplicity",
+            subtext: "Created using the freshest, most flavorful, aromatic Organic Ingredients",
             button: {
               text: "SHOP HERE",
               link: "#shop"
@@ -185,7 +185,7 @@ function App() {
           id: "mission",
           type: "text_block",
           title: "The Mission",
-          content: "The energy that goes into every product that we create: Care ~ Consideration ~ Love!",
+          content: "The energy that goes into every product that we create:\u00A0Care\u00A0~\u00A0Consideration\u00A0~\u00A0Love!",
           style: {
             background: "white",
             text_align: "center",
