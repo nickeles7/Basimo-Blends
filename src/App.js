@@ -185,7 +185,7 @@ function App() {
           id: "mission",
           type: "text_block",
           title: "The Mission",
-          content: "The energy that goes into every product that we create\u00A0Care\u00A0~\u00A0Consideration\u00A0~\u00A0Love!",
+          content: "The energy that goes into every product that we create\nCare\u00A0~\u00A0Consideration\u00A0~\u00A0Love!",
           style: {
             background: "white",
             text_align: "center",
