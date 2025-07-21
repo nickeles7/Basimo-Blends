@@ -49,12 +49,13 @@
 
 .mission-quote {
   font-family: 'Playfair Display', serif;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   line-height: 1.5;
   color: #5c8d76;
   margin: 0;
   position: relative;
   z-index: 1;
+  white-space: pre-line;
 }
 
 .values-container {

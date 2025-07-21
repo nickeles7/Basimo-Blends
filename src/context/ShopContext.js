@@ -9,11 +9,12 @@ export const ShopProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // This will be enabled once you have Shopify credentials
-    if (process.env.REACT_APP_SHOPIFY_DOMAIN) {
+    // Initialize checkout with proper Shopify credentials
+    if (process.env.REACT_APP_SHOPIFY_DOMAIN && process.env.REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN) {
+      console.log('🚀 Initializing with Shopify credentials');
       initializeCheckout();
     } else {
-      // For development/testing without Shopify credentials
+      console.log('⚠️ Missing Shopify credentials, using mock checkout for development');
       createMockCheckout();
     }
   }, []);
@@ -65,13 +66,13 @@ export const ShopProvider = ({ children }) => {
   const createMockCheckout = () => {
     console.log('Creating mock checkout/cart for development');
 
-    // Get domain from env or use default
-    const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN || 'basimo-beach-cafe.myshopify.com';
+    // Use the proper checkout URL from environment variables
+    const checkoutUrlBase = process.env.REACT_APP_SHOPIFY_CHECKOUT_URL_BASE || 'https://basimo-beach-cafe.myshopify.com/cart';
 
     // Create a realistic mock checkout object - matching what's coming from the API
     const mockCheckout = {
       id: 'mock-cart-id-' + Date.now(),
-      webUrl: `https://${shopifyDomain}/cart`, // Modern cart URL format
+      webUrl: checkoutUrlBase, // Use the proper checkout URL
       lineItems: [],
       totalPrice: { amount: '0.00', currencyCode: 'USD' },
       completedAt: null,
@@ -146,7 +147,7 @@ export const ShopProvider = ({ children }) => {
             variant: {
               id: variantId,
               title: 'Default Title',
-              price: { amount: '10.95', currencyCode: 'USD' },
+              price: { amount: '11.95', currencyCode: 'USD' },
               image: { src: '/images/zaatar_2.png' }
             },
             quantity

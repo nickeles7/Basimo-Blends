@@ -7,40 +7,42 @@ const Cart = () => {
 
   if (!isCartOpen) return null;
 
-  // IMPROVED CHECKOUT WITH CART TRANSFER
+  // PROPER SHOPIFY CART URL CHECKOUT
   const handleCheckout = () => {
     if (checkout && checkout.lineItems && checkout.lineItems.length > 0) {
-      // Show a friendly loading message to explain the domain change
       setIsLoading(true);
 
-      // Get the Shopify domain from environment or use the hardcoded value as fallback
+      // Build the proper Shopify cart URL with variant IDs
       const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN || "basimo-beach-cafe.myshopify.com";
+      let checkoutUrl = `https://${shopifyDomain}/cart`;
 
-      // Create a cart URL that will work with your items
-      let directCartUrl = `https://${shopifyDomain}/cart`;
-
-      // If we have line items, add them to the URL as parameters
-      // This ensures the cart items transfer even if cookies don't
+      // Add items to cart URL using variant IDs in the format: /cart/variant_id:quantity,variant_id:quantity
       if (checkout.lineItems && checkout.lineItems.length > 0) {
-        // Add each item as a URL parameter
-        checkout.lineItems.forEach((item, index) => {
-          // Format: /cart/{variant_id}:{quantity}
-          if (index === 0) {
-            directCartUrl += '/';
-          } else {
-            directCartUrl += ',';
-          }
-          directCartUrl += `${item.variant.id.split('/').pop()}:${item.quantity}`;
-        });
+        const cartItems = checkout.lineItems.map(item => {
+          // Extract variant ID from the full Shopify ID (remove the gid://shopify/ProductVariant/ prefix)
+          const variantId = item.variant.id.split('/').pop();
+          return `${variantId}:${item.quantity}`;
+        }).join(',');
+
+        checkoutUrl = `https://${shopifyDomain}/cart/${cartItems}`;
       }
 
-      console.log('✅ Redirecting to Shopify cart with items:', directCartUrl);
+      console.log('🛒 Cart items:', checkout.lineItems.length);
+      console.log('🛒 Total price:', checkout.totalPrice?.amount || '0.00');
+      console.log('✅ Redirecting to Shopify cart:', checkoutUrl);
 
       // Show a user-friendly message before redirecting
-      alert("You'll now be redirected to our secure checkout page. Thank you for shopping with Basimo Blend!");
+      const itemCount = checkout.lineItems.reduce((total, item) => total + item.quantity, 0);
+      const totalAmount = checkout.totalPrice?.amount || '0.00';
 
-      // Redirect to the Shopify cart
-      window.location.href = directCartUrl;
+      // For production, use a more professional confirmation
+      // eslint-disable-next-line no-restricted-globals
+      if (confirm(`Ready to checkout with ${itemCount} item(s) for $${totalAmount}? You'll be redirected to our secure Shopify checkout.`)) {
+        // Redirect to the Shopify checkout
+        window.location.href = checkoutUrl;
+      } else {
+        setIsLoading(false);
+      }
     } else {
       // Cart is empty, let the user know
       alert('🛒 Your cart is empty. Please add items before checking out.');
