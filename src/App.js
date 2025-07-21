@@ -1,5 +1,6 @@
 // App.js - Main Container Component
 import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/App.css';
 import { ShopProvider } from './context/ShopContext';
 import Header from './components/Header';
@@ -10,6 +11,8 @@ import Mission from './components/Mission';
 import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
 import Cart from './components/Cart';
+import BlogList from './components/blog/BlogList';
+import BlogPost from './components/blog/BlogPost';
 import { setupScrollNav } from './utils/scrollNavUtils';
 import './utils/smoothscroll'; // Import the smoothscroll polyfill
 import './styles/SectionSpacing.css';
@@ -55,6 +58,7 @@ function App() {
         },
         navigation: [
           { label: "Shop", link: "#shop" },
+          { label: "Blog", link: "/blog" },
           { label: "The Mission", link: "#mission" },
           { label: "Connect", link: "#footer" }
         ],
@@ -228,64 +232,78 @@ function App() {
     }
   };
 
+  // Homepage component
+  const HomePage = () => (
+    <>
+      <section id="place">
+        <HeroSlideshow
+          images={pageData.homepage.sections[0].content.images}
+          headline={pageData.homepage.sections[0].content.headline}
+          subtext={pageData.homepage.sections[0].content.subtext}
+          button={pageData.homepage.sections[0].content.button}
+          style={pageData.homepage.sections[0].style}
+        />
+      </section>
+
+      <section id="shop">
+        <ProductShowcase
+          title={pageData.homepage.sections[1].content.title}
+          description={pageData.homepage.sections[1].content.description}
+          products={pageData.homepage.sections[1].content.products}
+          style={pageData.homepage.sections[1].style}
+        />
+      </section>
+
+      <section id="ingredients">
+        <IngredientsList
+          title={pageData.homepage.sections[2].title}
+          ingredients={pageData.homepage.sections[2].content}
+          style={pageData.homepage.sections[2].style}
+        />
+      </section>
+
+      <section id="mission">
+        <Mission
+          title={pageData.homepage.sections[3].title}
+          content={pageData.homepage.sections[3].content}
+          style={pageData.homepage.sections[3].style}
+        />
+      </section>
+
+      <section id="reviews">
+        <Testimonials
+          reviews={pageData.homepage.sections[4].content}
+          style={pageData.homepage.sections[4].style}
+        />
+      </section>
+
+      <section id="footer">
+        <Footer
+          content={pageData.homepage.sections[5].content}
+          style={pageData.homepage.sections[5].style}
+        />
+      </section>
+    </>
+  );
+
   return (
     <ShopProvider>
-      <div className="basimo-app">
-        <Header
-          content={pageData.header.content}
-          style={pageData.header.style}
-        />
-        <section id="place">
-          <HeroSlideshow
-            images={pageData.homepage.sections[0].content.images}
-            headline={pageData.homepage.sections[0].content.headline}
-            subtext={pageData.homepage.sections[0].content.subtext}
-            button={pageData.homepage.sections[0].content.button}
-            style={pageData.homepage.sections[0].style}
+      <Router>
+        <div className="basimo-app">
+          <Header
+            content={pageData.header.content}
+            style={pageData.header.style}
           />
-        </section>
-        
-        <section id="shop">
-          <ProductShowcase 
-            title={pageData.homepage.sections[1].content.title}
-            description={pageData.homepage.sections[1].content.description}
-            products={pageData.homepage.sections[1].content.products}
-            style={pageData.homepage.sections[1].style}
-          />
-        </section>
-        
-        <section id="ingredients">
-          <IngredientsList 
-            title={pageData.homepage.sections[2].title}
-            ingredients={pageData.homepage.sections[2].content}
-            style={pageData.homepage.sections[2].style}
-          />
-        </section>
-        
-        <section id="mission">
-          <Mission 
-            title={pageData.homepage.sections[3].title}
-            content={pageData.homepage.sections[3].content}
-            style={pageData.homepage.sections[3].style}
-          />
-        </section>
-        
-        <section id="reviews">
-          <Testimonials 
-            reviews={pageData.homepage.sections[4].content}
-            style={pageData.homepage.sections[4].style}
-          />
-        </section>
-        
-        <section id="footer">
-          <Footer 
-            content={pageData.homepage.sections[5].content}
-            style={pageData.homepage.sections[5].style}
-          />
-        </section>
-        
-        <Cart />
-      </div>
+
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/blog" element={<BlogList />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+          </Routes>
+
+          <Cart />
+        </div>
+      </Router>
     </ShopProvider>
   );
 }

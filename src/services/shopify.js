@@ -1,9 +1,10 @@
 import Client from 'shopify-buy';
 
-// Log Shopify configuration for debugging
-console.log('Initializing Shopify client with:');
-console.log('- Domain:', process.env.REACT_APP_SHOPIFY_DOMAIN || 'Not set');
-console.log('- Token:', process.env.REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN ? 'Present (hidden)' : 'Not set');
+// Log Shopify configuration for debugging (production-safe)
+console.log('🚀 Initializing Shopify client...');
+console.log('- Domain:', process.env.REACT_APP_SHOPIFY_DOMAIN || 'Not configured');
+console.log('- Token:', process.env.REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN ? '✅ Present' : '❌ Missing');
+console.log('- Checkout URL Base:', process.env.REACT_APP_SHOPIFY_CHECKOUT_URL_BASE || 'Using default');
 
 // Build the Shopify client with explicit error handling
 let client;

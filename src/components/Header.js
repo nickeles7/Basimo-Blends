@@ -1,5 +1,6 @@
 // components/Header.js
 import React, { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import '../styles/Header.css';
 
@@ -7,6 +8,8 @@ const Header = ({ content, style }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { setIsCartOpen } = useContext(ShopContext);
+  const navigate = useNavigate();
+  const location = useLocation();
   
   // Handle scroll effect for enhanced sticky header
   useEffect(() => {
@@ -32,22 +35,34 @@ const Header = ({ content, style }) => {
     setIsCartOpen(true);
   };
   
-  // Handle smooth scrolling to section when nav item is clicked
+  // Handle navigation clicks (both internal routes and anchor links)
   const handleNavClick = (e, target) => {
     e.preventDefault();
-    
+
     // Check if the href is an anchor link
     if (target.startsWith('#')) {
-      const element = document.getElementById(target.substring(1));
-      if (element) {
-        // Smooth scroll to the element
-        element.scrollIntoView({ behavior: 'smooth' });
-        // Close mobile menu after navigation
-        setMobileMenuOpen(false);
+      // If we're not on the homepage, navigate to homepage first
+      if (location.pathname !== '/') {
+        navigate('/');
+        // Wait for navigation to complete, then scroll
+        setTimeout(() => {
+          const element = document.getElementById(target.substring(1));
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      } else {
+        // We're already on homepage, just scroll
+        const element = document.getElementById(target.substring(1));
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
       }
+      setMobileMenuOpen(false);
     } else {
-      // For non-anchor links, navigate normally
-      window.location.href = target;
+      // For internal routes, use React Router
+      navigate(target);
+      setMobileMenuOpen(false);
     }
   };
   
@@ -57,13 +72,13 @@ const Header = ({ content, style }) => {
         gap: style.gap
       }}>
         <div className={`logo-container ${style.logo_alignment === 'center_vertical' ? 'align-center' : ''}`}>
-          <a href={content.logo.link} className="logo-link">
-            <img 
+          <Link to={content.logo.link} className="logo-link">
+            <img
               src="/Transparent_Logo.png"
               alt="Basimo Blends Logo"
               className={`site-logo-image ${scrolled ? 'scrolled' : ''}`}
             />
-            
+
             {content.logo.text && content.logo.style.display_inline_with_logo && (
               <span className="site-logo-text" style={{
                 fontWeight: content.logo.style.font_weight,
@@ -73,7 +88,7 @@ const Header = ({ content, style }) => {
                 {content.logo.text}
               </span>
             )}
-          </a>
+          </Link>
         </div>
         
         <nav className={`main-nav ${mobileMenuOpen ? 'mobile-open' : ''} ${style.nav_alignment === 'middle' ? 'align-middle' : ''}`}>
