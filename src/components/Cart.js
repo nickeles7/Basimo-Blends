@@ -7,29 +7,25 @@ const Cart = () => {
 
   if (!isCartOpen) return null;
 
-  // PROPER SHOPIFY CART URL CHECKOUT
+  // PROPER SHOPIFY CHECKOUT URL FOR HEADLESS COMMERCE
   const handleCheckout = () => {
     if (checkout && checkout.lineItems && checkout.lineItems.length > 0) {
       setIsLoading(true);
 
-      // Build the proper Shopify cart URL with variant IDs
-      const shopifyDomain = process.env.REACT_APP_SHOPIFY_DOMAIN || "basimo-beach-cafe.myshopify.com";
-      let checkoutUrl = `https://${shopifyDomain}/cart`;
+      // Use the webUrl provided by Shopify's Storefront API
+      // This is the correct URL for headless/API-based checkouts
+      const checkoutUrl = checkout.webUrl;
 
-      // Add items to cart URL using variant IDs in the format: /cart/variant_id:quantity,variant_id:quantity
-      if (checkout.lineItems && checkout.lineItems.length > 0) {
-        const cartItems = checkout.lineItems.map(item => {
-          // Extract variant ID from the full Shopify ID (remove the gid://shopify/ProductVariant/ prefix)
-          const variantId = item.variant.id.split('/').pop();
-          return `${variantId}:${item.quantity}`;
-        }).join(',');
-
-        checkoutUrl = `https://${shopifyDomain}/cart/${cartItems}`;
+      if (!checkoutUrl) {
+        console.error('❌ No checkout URL available');
+        alert('Unable to proceed to checkout. Please refresh and try again.');
+        setIsLoading(false);
+        return;
       }
 
       console.log('🛒 Cart items:', checkout.lineItems.length);
       console.log('🛒 Total price:', checkout.totalPrice?.amount || '0.00');
-      console.log('✅ Redirecting to Shopify cart:', checkoutUrl);
+      console.log('✅ Redirecting to Shopify checkout:', checkoutUrl);
 
       // Show a user-friendly message before redirecting
       const itemCount = checkout.lineItems.reduce((total, item) => total + item.quantity, 0);
@@ -39,6 +35,7 @@ const Cart = () => {
       // eslint-disable-next-line no-restricted-globals
       if (confirm(`Ready to checkout with ${itemCount} item(s) for $${totalAmount}? You'll be redirected to our secure Shopify checkout.`)) {
         // Redirect to the Shopify checkout
+        // This URL bypasses the password-protected storefront and goes directly to checkout
         window.location.href = checkoutUrl;
       } else {
         setIsLoading(false);

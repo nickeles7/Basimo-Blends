@@ -148,8 +148,8 @@ function App() {
                 image: "/images/zaatar_1.png",
                 description: "A blend of finely ground organic ingredients including Organic Arabica Beans...",
                 size: "2.5 oz (70g) jar",
-                shopify_product_id: "4788756709515",
-                shopify_variant_id: "46693487116440",
+                shopify_product_id: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQ3ODg3NTY3MDk1MTU=",
+                shopify_variant_id: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80NjY5MzQ4NzExNjQ0MA==",
                 button: {
                   text: "Add to Cart",
                   action: "shopify:add_to_cart"
