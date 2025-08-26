@@ -35,8 +35,10 @@ export const ShopProvider = ({ children }) => {
       console.log('Creating new Shopify checkout/cart');
       const newCheckout = await shopifyClient.checkout.create({
         lineItems: [],
+        taxExempt: true,  // Mark checkout as tax-exempt for food items
         customAttributes: [
-          { key: 'source', value: 'basimo-blend-website' }
+          { key: 'source', value: 'basimo-blend-website' },
+          { key: 'product_type', value: 'food' }  // Indicate these are food products
         ]
       });
 
@@ -119,7 +121,14 @@ export const ShopProvider = ({ children }) => {
                 shopifyError.message.includes('invalid')
               )) {
               console.log('Checkout/cart appears to be invalid, creating a new one...');
-              const newCheckout = await shopifyClient.checkout.create();
+              const newCheckout = await shopifyClient.checkout.create({
+                lineItems: [],
+                taxExempt: true,  // Mark checkout as tax-exempt for food items
+                customAttributes: [
+                  { key: 'source', value: 'basimo-blend-website' },
+                  { key: 'product_type', value: 'food' }
+                ]
+              });
               console.log("🧪 checkout.webUrl", newCheckout.webUrl);
               localStorage.setItem('checkoutId', newCheckout.id);
 
@@ -197,7 +206,14 @@ export const ShopProvider = ({ children }) => {
                 error.message.includes('expired') ||
                 error.message.includes('invalid')
               )) {
-              const newCheckout = await shopifyClient.checkout.create();
+              const newCheckout = await shopifyClient.checkout.create({
+                lineItems: [],
+                taxExempt: true,  // Mark checkout as tax-exempt for food items
+                customAttributes: [
+                  { key: 'source', value: 'basimo-blend-website' },
+                  { key: 'product_type', value: 'food' }
+                ]
+              });
               localStorage.setItem('checkoutId', newCheckout.id);
               setCheckout(newCheckout);
             }
@@ -247,7 +263,14 @@ export const ShopProvider = ({ children }) => {
                 error.message.includes('expired') ||
                 error.message.includes('invalid')
               )) {
-              const newCheckout = await shopifyClient.checkout.create();
+              const newCheckout = await shopifyClient.checkout.create({
+                lineItems: [],
+                taxExempt: true,  // Mark checkout as tax-exempt for food items
+                customAttributes: [
+                  { key: 'source', value: 'basimo-blend-website' },
+                  { key: 'product_type', value: 'food' }
+                ]
+              });
               localStorage.setItem('checkoutId', newCheckout.id);
               setCheckout(newCheckout);
             }
