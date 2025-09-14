@@ -286,6 +286,26 @@ function App() {
     </>
   );
 
+  // MAINTENANCE MODE - Comment out this return statement to restore normal operation
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      backgroundColor: '#f5f5f5',
+      fontFamily: 'Arial, sans-serif',
+      padding: '20px',
+      textAlign: 'center'
+    }}>
+      <h1 style={{ color: '#333', marginBottom: '20px' }}>Sorry for Service Interruption</h1>
+      <p style={{ color: '#666', fontSize: '18px' }}>Loading...</p>
+    </div>
+  );
+
+  // Original site code - uncomment below to restore
+  /*
   return (
     <ShopProvider>
       <Router>
@@ -306,6 +326,7 @@ function App() {
       </Router>
     </ShopProvider>
   );
+  */
 }
 
 export default App;
