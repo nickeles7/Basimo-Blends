@@ -154,6 +154,19 @@ function App() {
                   text: "Add to Cart",
                   action: "shopify:add_to_cart"
                 }
+              },
+              {
+                product_name: "Rosemary Salt",
+                price: "$4.95",
+                image: "/images/rosemary-salt.png",
+                description: "Locally grown rosemary ground fine with Celtic Sea Salt. A fragrant blend that adds an herbal, savory note to roasted vegetables, grilled meats, and finishing dishes.",
+                size: "4 Dram Glass Vial (0.5 oz / 14g)",
+                shopify_product_id: "gid://shopify/Product/8852810367128",
+                shopify_variant_id: "gid://shopify/ProductVariant/47289290883224",
+                button: {
+                  text: "Add to Cart",
+                  action: "shopify:add_to_cart"
+                }
               }
             ]
           },
