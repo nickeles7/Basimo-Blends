@@ -144,7 +144,7 @@ function App() {
               },
               {
                 product_name: "Organic Turkish Coffee Blend",
-                price: "$10.99",
+                price: "$10.95",
                 image: "/images/zaatar_1.png",
                 description: "A blend of finely ground organic ingredients including Organic Arabica Beans...",
                 size: "2.5 oz (70g) jar",
